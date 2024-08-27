@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.lease.web.app.mapper.AttrValueMapper">
+<!--    这里只有一个属性需要另外映射，按照规定命名即可自动映射，无需使用resultMap-->
+    <select id="selectListByRoomId" resultType="com.atguigu.lease.web.app.vo.attr.AttrValueVo">
+        select av.id,
+               av.name,
+               av.attr_key_id,
+               ak.name attr_key_name
+        from lease.attr_value av
+                 left join lease.attr_key ak on av.attr_key_id = ak.id and ak.is_deleted = 0
+        where av.is_deleted = 0
+          and av.id in (select attr_value_id
+                     from lease.room_attr_value
+                     where room_attr_value.is_deleted = 0
+                       and room_id = #{id})
+    </select>
+</mapper>
